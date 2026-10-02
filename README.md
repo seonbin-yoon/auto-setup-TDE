@@ -19,7 +19,7 @@ run `installer.bin` with the appropriate arguments to start the installer.
 
 ## Special Notes
 * **This program is not suitable for typical Edk2 development environments. It does not automatically generate target.txt, dsc, and inf files.**
-* Note that when entering the path to `global.cfg`, if the filename at the end of the path is not `global.cfg` or is not left blank—for example, if there is a typo such as `global.cfh`—the program may not be able to locate the configuration file correctly.**
+* Note that when entering the path to `global.cfg`, if the filename at the end of the path is not `global.cfg` or is not left blank—for example, **if there is a typo such as `global.cfh`—the program may not be able to locate the configuration file correctly.**
 * If the [path] section of the `global.cfg` file
 contains a path value that does not follow the format below,
 **the program may malfunction.**
