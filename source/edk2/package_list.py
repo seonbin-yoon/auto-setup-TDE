@@ -12,7 +12,7 @@ NEED_PACKAGES = {
         "clangd",
         "gdb-multiarch",
         "bear"
-        ],
+    ],
     PackageManager.DNF: [
     "@development-tools",  # Ubuntu의 build-essential 대체 (그룹 패키지)
     "llvm",
