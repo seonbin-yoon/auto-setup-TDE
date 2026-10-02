@@ -35,6 +35,7 @@ def load_shell_tasks(
     ]
 
     apt_install_command = [
+        "DEBIAN_FRONTEND=noninteractive",
         "apt-get",
         "install",
         "-y",
