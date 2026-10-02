@@ -3,7 +3,6 @@ from pathlib import Path
 from errors import qemu_task_errors, task_errors
 from modules import mapi, shell, status, timer
 from modules.console import console
-
 from qemu import func_commands, package_list
 
 
