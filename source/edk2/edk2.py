@@ -72,7 +72,7 @@ def start(contexts: mapi.Contexts) -> None:
     end_time = timer.now_time()
     spend_time = timer.spend_time_str(start_time, end_time)
     console.print(
-        "[yellow][NOTE] Source ~/.bashrc or log out and "
+        "[yellow][NOTE] source ~/.bashrc or log out and "
         "back in for the changes to take effect![/yellow]"
         )
     console.print(
