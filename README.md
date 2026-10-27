@@ -8,6 +8,7 @@ It automatically configures the environment so that developers do not have to go
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/seonbin-yoon/ToolOS
+cd ToolOS
 ```
 
 ### 2. Create the Configuration File
@@ -26,8 +27,9 @@ QEMU_WORKSPACE=~/qemu
 
 ### 4. Run the Installer
 After cloning this repository, navigate to the `bin/setup.dist` folder and run `setup` with the appropriate arguments to start the installer.
-#### Example:  
+#### Example:
 ```bash
+cd ../auto-setup-tde
 ./bin/setup.dist/setup --cfg-file=~/ToolOS/global.cfg --install=edk2
 ```
 
