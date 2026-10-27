@@ -6,6 +6,7 @@ NEED_PACKAGES = {
         "qemu-efi-aarch64",
     ],
     PackageManager.DNF: [
+        "edk2-aarch64",
         "qemu-system-aarch64"
     ]
 }

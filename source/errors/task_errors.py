@@ -3,5 +3,9 @@ class TaskError(Exception):
 
 class FailedRunError(TaskError):
     """작업 실행에 실패함"""
-    pass
-
+    def __init__(self, command: list[str], stderr: str) -> None:
+        super().__init__(
+            f"[red][ERROR][/red]: The command '{" ".join(command)}' failed to execute."
+            "\n\n*** stderr ***\n"
+            f"{stderr}"
+        )

@@ -8,11 +8,6 @@ from typing import Protocol, cast
 
 
 @dataclass(slots=True, frozen=True)
-class CustomPaths:
-    EDK2_PATH: Path
-    QEMU_PATH: Path
-
-@dataclass(slots=True, frozen=True)
 class ShellTask:
     explain_message: str
     path: Path
@@ -23,13 +18,21 @@ class FunctionTask:
     explain_message: str
     func: Callable[..., object]
 
+@dataclass(slots=True, frozen=True)
+class CustomPaths:
+    EDK2_PATH: Path
+    QEMU_PATH: Path
+
 class PackageManagerImpl(Protocol):
     def load_shell_tasks(
             self,
             run_on_root: bool,
             home_path: Path,
-            need_to_install_packages: list[str]
+            missing_pkgs: list[str]
             ) -> list[ShellTask]: ...
+    def load_envs(
+            self
+            ) -> dict[str, str]: ...
     def get_missing_packages(
             self,
             must_to_install_pkgs: list[str]
@@ -53,6 +56,6 @@ class Contexts:
     custom_paths: CustomPaths
     package_manager: PackageManager
     home_path: Path
-    program_path: Path
+
 
 

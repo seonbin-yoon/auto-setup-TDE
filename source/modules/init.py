@@ -1,11 +1,10 @@
 import os
 import platform
-import sys
 from pathlib import Path
 
 import distro
-from errors import init_errors
 
+from errors import init_errors
 from modules import config, mapi, shell, status
 from modules.console import console
 
@@ -50,8 +49,10 @@ def init(cfg_file_path: str) -> mapi.Contexts:
             raise init_errors.NoRootPrivilegesError()
 
     if not _run_on_root():
+        ret_code = shell.run(["sudo", "-v"]).returncode
+
         with status.step_status("Borrow Root Privileges for Package Installation"):
-            if shell.run(["sudo", "-v"]).returncode:
+            if ret_code:
                 raise init_errors.SudoError()
 
     with status.step_status("Collect runtime context"):
@@ -60,7 +61,6 @@ def init(cfg_file_path: str) -> mapi.Contexts:
             run_on_docker=_run_on_docker(),
             custom_paths=config.load_config(cfg_file_path),
             package_manager=linux_distro,
-            home_path=Path.home(),
-            program_path=Path(sys.argv[0]).absolute(),
+            home_path=Path.home()
         )
 

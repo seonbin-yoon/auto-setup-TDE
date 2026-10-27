@@ -3,7 +3,7 @@ from pathlib import Path
 from errors import qemu_task_errors, task_errors
 from modules import mapi, shell, status, timer
 from modules.console import console
-from qemu import func_commands, package_list
+from packages.qemu import func_cmds, package_lists
 
 
 def pre_check(qemu_path: Path) -> None:
@@ -16,52 +16,51 @@ def pre_check(qemu_path: Path) -> None:
 
 def start(contexts: mapi.Contexts) -> None:
     console.print(
-        "[bold cyan]--- Let's get started with setting up " \
+        "[bold cyan]--- Let's get started with setting up "
         "the QEMU environment for ToolOS development ---[/bold cyan]"
         )
 
     start_time = timer.now_time()
     pkg_man = contexts.package_manager.impl
-    must_to_install_pkgs = package_list.NEED_PACKAGES[contexts.package_manager]
+    must_to_install_pkgs = package_lists.NEED_PACKAGES[contexts.package_manager]
+    env = pkg_man.load_envs()
 
     with status.step_status("Checking for missing apt packages on the device.."):
-        need_to_install_packages = pkg_man.get_missing_packages(must_to_install_pkgs)
+        missing_pkgs = pkg_man.get_missing_packages(must_to_install_pkgs)
 
     console.print(
         "[yellow][NOTE] Must install the following packages[/yellow]: "
-        f"{", ".join(sorted(must_to_install_pkgs))}",
+        f"{", ".join(must_to_install_pkgs)}",
         highlight=False)
     console.print(
         "[yellow][NOTE] Missing packages on the device[/yellow]: "
-        f"{', '.join(sorted(need_to_install_packages))
-        if need_to_install_packages else 'None'}",
+        f"{', '.join(sorted(missing_pkgs))
+        if missing_pkgs else 'None'}",
         highlight=False)
 
-    if need_to_install_packages:
+    if missing_pkgs:
         if contexts.run_on_docker:
             console.print(
-            "[yellow][NOTE] This script is currently " \
-            "running inside a Docker container. " \
-            "The package installation will be reset " \
+            "[yellow][NOTE] This script is currently "
+            "running inside a Docker container. "
+            "The package installation will be reset "
             "when the container is restarted.[/yellow]"
             )
         shell_tasks = pkg_man.load_shell_tasks(
             contexts.run_on_root,
             contexts.home_path,
-            need_to_install_packages
+            missing_pkgs
             )
-    else:
-        shell_tasks = []
 
-    for shell_task in shell_tasks:
-        with status.step_status(f"{shell_task.explain_message}"):
-            code = shell.run(shell_task.command, cwd=shell_task.path).returncode
-            if code:
-                raise task_errors.FailedRunError(shell_task)
+        for shell_task in shell_tasks:
+            with status.step_status(shell_task.explain_message):
+                result = shell.run(shell_task.command, cwd=shell_task.path, env=env)
+                if result.returncode:
+                    raise task_errors.FailedRunError(shell_task.command, result.stderr)
 
-    func_tasks = func_commands.load_func_tasks()
+    func_tasks = func_cmds.load_func_tasks()
     for func_task in func_tasks:
-        with status.step_status(f"{func_task.explain_message}"):
+        with status.step_status(func_task.explain_message):
             func_task.func(contexts)
 
     end_time = timer.now_time()

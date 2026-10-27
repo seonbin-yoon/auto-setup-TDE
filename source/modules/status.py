@@ -7,7 +7,7 @@ from modules.console import console
 @contextmanager
 def step_status(
     description: str
-    ) -> Generator[None, object, None]:
+    ) -> Generator[None, None, None]:
     with console.status(f"{description}", spinner='bouncingBar', speed=0.5):
         try:
             yield
